@@ -31,8 +31,50 @@
 
   <title>Vaglio – demo</title>
   <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Schermata di caricamento: visibile subito, sparisce quando l'app è pronta. */
+    html, body { margin: 0; background: #141218; }
+    #loading {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px; padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #E6E0E9; text-align: center; transition: opacity .3s;
+    }
+    #loading h1 { margin: 0; font-size: 34px; font-weight: 500; }
+    #loading p { margin: 0; color: #CAC4D0; font-size: 15px; max-width: 360px; line-height: 1.5; }
+    #loading .spinner {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 4px solid #4A4458; border-top-color: #CFBCFF; animation: spin 0.9s linear infinite;
+    }
+    #loading .slow { display: none; font-size: 13px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
+  <div id="loading">
+    <h1>Vaglio</h1>
+    <div class="spinner"></div>
+    <p>Caricamento della demo… può richiedere qualche secondo.</p>
+    <p class="slow" id="slow">
+      Ci sta mettendo più del previsto. Alcune reti (scuole, uffici) bloccano questo sito:
+      prova con i dati del telefono o con un altro browser.
+    </p>
+  </div>
+  <noscript><p style="color:#fff;text-align:center">Per vedere la demo attiva JavaScript nel browser.</p></noscript>
+  <script>
+    setTimeout(function () {
+      var slow = document.getElementById('slow');
+      if (slow) slow.style.display = 'block';
+    }, 20000);
+    // Flutter lancia questo evento quando ha disegnato la prima schermata.
+    window.addEventListener('flutter-first-frame', function () {
+      var el = document.getElementById('loading');
+      if (!el) return;
+      el.style.opacity = '0';
+      setTimeout(function () { el.remove(); }, 300);
+    });
+  </script>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
